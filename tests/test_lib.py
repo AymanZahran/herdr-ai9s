@@ -1,6 +1,6 @@
 import unittest
 
-from lib import created_pane_id, decide, plugin_pane_id, shell_command, tab_label
+from lib import created_pane_id, decide, plugin_pane_id, shell_command, tab_label, target_pane
 
 
 class LibTest(unittest.TestCase):
@@ -21,6 +21,11 @@ class LibTest(unittest.TestCase):
         self.assertEqual(tab_label(""), "ai9s")
         self.assertTrue(tab_label("x" * 80).endswith("…"))
         self.assertLessEqual(len(tab_label("x" * 80)), 48)
+
+    def test_target_pane(self):
+        self.assertEqual(target_pane("w1:p1", {"focused_pane_id": "w1:p9"}), "w1:p1")
+        self.assertEqual(target_pane("  ", {"focused_pane_id": " w1:p4 "}), "w1:p4")
+        self.assertEqual(target_pane("", None), "")
 
     def test_decide(self):
         self.assertEqual(decide("", False, False, False), ("open", ""))

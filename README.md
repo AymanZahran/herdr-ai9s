@@ -36,7 +36,7 @@ From GitHub:
 herdr plugin install AymanZahran/herdr-ai9s
 ```
 
-Herdr clones the default branch, shows the manifest and the commands it will run, and registers plugin id `aymanzahran.ai9s`. Confirm the preview. Add `--yes` only when you already trust this repository. Pin this release with `--ref v0.1.0`.
+Herdr clones the default branch, shows the manifest and the commands it will run, and registers plugin id `aymanzahran.ai9s`. Confirm the preview. Add `--yes` only when you already trust this repository. Pin this release with `--ref v0.1.1`.
 
 The GitHub topic `herdr-plugin` is what lists the repository in the [Herdr marketplace](https://herdr.dev/plugins/). It is a topic, not a git tag. Install does not require a tag named `herdr-plugin`.
 
@@ -72,7 +72,7 @@ You should see `aymanzahran.ai9s.toggle`.
 
 ## Key binding
 
-Add this to `~/.config/herdr/config.toml`. The suggested key is `prefix+i`:
+The plugin ships the action `aymanzahran.ai9s.toggle`. It does not ship a key. Herdr reads bindings from your own config, usually `~/.config/herdr/config.toml`. Add this there. The suggested key is `prefix+i`:
 
 ```toml
 # Toggle the ai9s finder. Enter in that pane opens the row in a new tab.
@@ -132,11 +132,13 @@ herdr plugin pane open \
   --plugin aymanzahran.ai9s \
   --entrypoint sidebar \
   --placement split \
+  --target-pane "$HERDR_PANE_ID" \
   --direction right \
   --focus \
-  --workspace "$HERDR_WORKSPACE_ID" \
   --cwd "$CWD"
 ```
+
+`$HERDR_PANE_ID` is the pane that had focus when you pressed the key. The context field `focused_pane_id` fills in when that variable is empty. A split does not take `--workspace`. On Herdr 0.9 that flag is rejected with `invalid_params`: "split and zoomed plugin panes target an existing pane; use target_pane_id".
 
 `$CWD` is `focused_pane_cwd` from `HERDR_PLUGIN_CONTEXT_JSON`, or `workspace_cwd` when the focused pane has no directory. The flag is omitted when both are empty.
 
@@ -322,6 +324,8 @@ The tests do not launch Herdr or ai9s. They cover quoting, labels, the toggle de
 ## Troubleshooting
 
 **The prefix does nothing.** The key is not bound until the `[[keys.command]]` block is in the config Herdr loaded. Run `herdr server reload-config` and check `herdr plugin action list --plugin aymanzahran.ai9s`.
+
+**The notification says to use `target_pane_id`.** The installed copy is 0.1.0, which passed `--workspace` on a split. Herdr rejects that. Update to 0.1.1, which passes `--target-pane` and leaves `--workspace` off. The key binding in your Herdr config stays as it is.
 
 **Enter resumes inside the sidebar.** The running ai9s is older than 1.0.8, or `AI9S_HERDR_OPEN` is unset. `ai9s version` must report 1.0.8 or newer. Quit that ai9s and toggle the sidebar again so the pane starts the new binary. From the sidebar process, `AI9S_HERDR_OPEN` should be the absolute path of `scripts/open_tab.py`.
 

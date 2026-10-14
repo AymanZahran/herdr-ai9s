@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.1 - 2026-10-14
+
+- The sidebar splits the focused pane. Herdr rejects a workspace id on a split, which is the `target_pane_id` error from 0.1.0.
+
 ## 0.1.0 - 2026-10-14
 
 - Sidebar in the current Herdr tab, toggled with a prefix key you bind (suggested `prefix+i`).

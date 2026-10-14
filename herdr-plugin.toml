@@ -1,6 +1,6 @@
 id = "aymanzahran.ai9s"
 name = "ai9s"
-version = "0.1.0"
+version = "0.1.1"
 min_herdr_version = "0.8.0"
 platforms = ["macos", "linux"]
 description = "ai9s session finder in a sidebar. Enter opens the selected agent in a new tab of the current workspace."

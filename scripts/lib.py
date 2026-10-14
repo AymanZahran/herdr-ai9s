@@ -27,6 +27,19 @@ def tab_label(text: str) -> str:
     return cleaned or "ai9s"
 
 
+def target_pane(pane_id: str, context: dict | None) -> str:
+    """Pane a split opens beside. Herdr rejects a workspace id on a split."""
+    pane = pane_id.strip() if isinstance(pane_id, str) else ""
+    if pane:
+        return pane
+    if not isinstance(context, dict):
+        return ""
+    focused = context.get("focused_pane_id") or ""
+    if isinstance(focused, str):
+        return focused.strip()
+    return ""
+
+
 def decide(pane_id: str, alive: bool, focused: bool, same_tab: bool) -> tuple[str, str]:
     """Return close, focus, or open for the sidebar in this tab."""
     if pane_id and alive and same_tab:

@@ -10,7 +10,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from lib import decide, plugin_pane_id  # noqa: E402
+from lib import decide, plugin_pane_id, target_pane  # noqa: E402
 
 import subprocess
 
@@ -18,7 +18,8 @@ import subprocess
 def main() -> int:
     herdr = os.environ.get("HERDR_BIN_PATH") or "herdr"
     plugin = os.environ.get("HERDR_PLUGIN_ID") or "aymanzahran.ai9s"
-    workspace, tab = context_ids()
+    context = plugin_context()
+    workspace, tab = context_ids(context)
     if not workspace or not tab:
         notify(herdr, "Open the ai9s sidebar from inside a Herdr tab.")
         return 1
@@ -52,16 +53,22 @@ def main() -> int:
             notify(herdr, err or "Could not focus the ai9s sidebar.")
             return 1
         return 0
+    # A split names the pane it divides. Herdr 0.9 rejects --workspace here:
+    # "split and zoomed plugin panes target an existing pane".
+    pane = target_pane(os.environ.get("HERDR_PANE_ID") or "", context)
+    if not pane:
+        notify(herdr, "Focus a Herdr pane, then open the ai9s sidebar.")
+        return 1
     args = [
         "plugin", "pane", "open",
         "--plugin", plugin,
         "--entrypoint", "sidebar",
         "--placement", "split",
+        "--target-pane", pane,
         "--direction", "right",
         "--focus",
-        "--workspace", workspace,
     ]
-    cwd = focused_cwd()
+    cwd = focused_cwd(context)
     if cwd:
         args.extend(["--cwd", cwd])
     payload, err = herdr_json(herdr, args)
@@ -78,32 +85,27 @@ def main() -> int:
     return 0
 
 
-def context_ids() -> tuple[str, str]:
-    workspace = os.environ.get("HERDR_WORKSPACE_ID") or ""
-    tab = os.environ.get("HERDR_TAB_ID") or ""
-    raw = os.environ.get("HERDR_PLUGIN_CONTEXT_JSON") or ""
-    if raw:
-        try:
-            data = json.loads(raw)
-        except json.JSONDecodeError:
-            data = {}
-        if isinstance(data, dict):
-            workspace = workspace or str(data.get("workspace_id") or "")
-            tab = tab or str(data.get("tab_id") or "")
-    return workspace.strip(), tab.strip()
-
-
-def focused_cwd() -> str:
+def plugin_context() -> dict:
     raw = os.environ.get("HERDR_PLUGIN_CONTEXT_JSON") or ""
     if not raw:
-        return ""
+        return {}
     try:
         data = json.loads(raw)
     except json.JSONDecodeError:
-        return ""
-    if not isinstance(data, dict):
-        return ""
-    cwd = data.get("focused_pane_cwd") or data.get("workspace_cwd") or ""
+        return {}
+    return data if isinstance(data, dict) else {}
+
+
+def context_ids(context: dict) -> tuple[str, str]:
+    workspace = os.environ.get("HERDR_WORKSPACE_ID") or ""
+    tab = os.environ.get("HERDR_TAB_ID") or ""
+    workspace = workspace or str(context.get("workspace_id") or "")
+    tab = tab or str(context.get("tab_id") or "")
+    return workspace.strip(), tab.strip()
+
+
+def focused_cwd(context: dict) -> str:
+    cwd = context.get("focused_pane_cwd") or context.get("workspace_cwd") or ""
     return cwd if isinstance(cwd, str) else ""
 
 
