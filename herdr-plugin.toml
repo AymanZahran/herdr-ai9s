@@ -1,0 +1,21 @@
+id = "aymanzahran.ai9s"
+name = "ai9s"
+version = "0.1.0"
+min_herdr_version = "0.8.0"
+platforms = ["macos", "linux"]
+description = "ai9s session finder in a sidebar. Enter opens the selected agent in a new tab of the current workspace."
+
+# Pane commands run in the project directory, so the script path goes through
+# HERDR_PLUGIN_ROOT. The shell execs ai9s, which keeps the terminal.
+[[panes]]
+id = "sidebar"
+title = "ai9s"
+placement = "split"
+command = ["sh", "-c", "exec \"$HERDR_PLUGIN_ROOT/scripts/sidebar.sh\""]
+
+[[actions]]
+id = "toggle"
+title = "ai9s sidebar"
+description = "Open the ai9s sidebar in this tab, focus it, or close it."
+contexts = ["pane", "workspace"]
+command = ["python3", "scripts/toggle.py"]
