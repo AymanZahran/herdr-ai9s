@@ -1,6 +1,14 @@
 import unittest
 
-from lib import created_pane_id, decide, plugin_pane_id, shell_command, tab_label, target_pane
+from lib import (
+    created_pane_id,
+    decide,
+    plugin_pane_id,
+    shell_command,
+    sidebar_pane,
+    tab_label,
+    target_pane,
+)
 
 
 class LibTest(unittest.TestCase):
@@ -26,6 +34,17 @@ class LibTest(unittest.TestCase):
         self.assertEqual(target_pane("w1:p1", {"focused_pane_id": "w1:p9"}), "w1:p1")
         self.assertEqual(target_pane("  ", {"focused_pane_id": " w1:p4 "}), "w1:p4")
         self.assertEqual(target_pane("", None), "")
+
+    def test_sidebar_pane(self):
+        panes = [
+            {"pane_id": "w1:p1", "tab_id": "w1:t1", "label": None},
+            {"pane_id": "w1:p2", "tab_id": "w1:t1", "label": "ai9s", "focused": False},
+            {"pane_id": "w1:p3", "tab_id": "w1:t1", "label": "ai9s", "focused": True},
+            {"pane_id": "w1:p4", "tab_id": "w1:t2", "label": "ai9s", "focused": True},
+        ]
+        self.assertEqual(sidebar_pane(panes, "w1:t1"), ("w1:p3", True))
+        self.assertEqual(sidebar_pane(panes[:2], "w1:t1"), ("w1:p2", False))
+        self.assertEqual(sidebar_pane([], "w1:t1"), ("", False))
 
     def test_decide(self):
         self.assertEqual(decide("", False, False, False), ("open", ""))

@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.2 - 2026-10-14
+
+- Pressing the prefix key again closes the sidebar in this tab, or focuses it when another pane is focused. A successful open is remembered. An ai9s pane already in the tab is reused.
+
 ## 0.1.1 - 2026-10-14
 
 - The sidebar splits the focused pane. Herdr rejects a workspace id on a split, which is the `target_pane_id` error from 0.1.0.

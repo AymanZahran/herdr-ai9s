@@ -10,7 +10,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from lib import decide, plugin_pane_id, target_pane  # noqa: E402
+from lib import decide, plugin_pane_id, sidebar_pane, target_pane  # noqa: E402
 
 import subprocess
 
@@ -30,13 +30,17 @@ def main() -> int:
     same_tab = False
     if saved:
         payload, err = herdr_json(herdr, ["pane", "get", saved])
-        if err is None and isinstance(payload, dict):
+        if not err and isinstance(payload, dict):
             result = payload.get("result", payload)
             pane = result.get("pane") if isinstance(result, dict) else None
             if isinstance(pane, dict) and pane.get("tab_id") == tab:
                 alive = True
                 same_tab = True
                 focused = bool(pane.get("focused"))
+    if not alive:
+        found, found_focused = sidebar_in_tab(herdr, workspace, tab)
+        if found:
+            saved, alive, same_tab, focused = found, True, True, found_focused
     action, pane_id = decide(saved, alive, focused, same_tab)
     if action == "close":
         code, err = run(herdr, ["plugin", "pane", "close", pane_id])
@@ -72,7 +76,8 @@ def main() -> int:
     if cwd:
         args.extend(["--cwd", cwd])
     payload, err = herdr_json(herdr, args)
-    if err is not None or not isinstance(payload, dict):
+    # herdr_json returns an empty string on success. An empty string is not None.
+    if err or not isinstance(payload, dict):
         notify(herdr, err or "Could not open the ai9s sidebar.")
         return 1
     opened = plugin_pane_id(payload)
@@ -83,6 +88,15 @@ def main() -> int:
     state[tab] = opened
     save_state(state_path, state)
     return 0
+
+
+def sidebar_in_tab(herdr: str, workspace: str, tab: str) -> tuple[str, bool]:
+    payload, err = herdr_json(herdr, ["pane", "list", "--workspace", workspace])
+    if err or not isinstance(payload, dict):
+        return "", False
+    result = payload.get("result", payload)
+    panes = result.get("panes") if isinstance(result, dict) else None
+    return sidebar_pane(panes, tab)
 
 
 def plugin_context() -> dict:

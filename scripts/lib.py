@@ -40,6 +40,25 @@ def target_pane(pane_id: str, context: dict | None) -> str:
     return ""
 
 
+def sidebar_pane(panes: list, tab: str) -> tuple[str, bool]:
+    """Return an ai9s sidebar already open in this tab, and whether it is focused."""
+    chosen = ""
+    if not isinstance(panes, list):
+        return "", False
+    for pane in panes:
+        if not isinstance(pane, dict):
+            continue
+        if pane.get("tab_id") != tab or pane.get("label") != "ai9s":
+            continue
+        pane_id = pane.get("pane_id") or ""
+        if not isinstance(pane_id, str) or pane_id == "":
+            continue
+        if pane.get("focused"):
+            return pane_id, True
+        chosen = pane_id
+    return chosen, False
+
+
 def decide(pane_id: str, alive: bool, focused: bool, same_tab: bool) -> tuple[str, str]:
     """Return close, focus, or open for the sidebar in this tab."""
     if pane_id and alive and same_tab:

@@ -36,7 +36,7 @@ From GitHub:
 herdr plugin install AymanZahran/herdr-ai9s
 ```
 
-Herdr clones the default branch, shows the manifest and the commands it will run, and registers plugin id `aymanzahran.ai9s`. Confirm the preview. Add `--yes` only when you already trust this repository. Pin this release with `--ref v0.1.1`.
+Herdr clones the default branch, shows the manifest and the commands it will run, and registers plugin id `aymanzahran.ai9s`. Confirm the preview. Add `--yes` only when you already trust this repository. Pin this release with `--ref v0.1.2`.
 
 The GitHub topic `herdr-plugin` is what lists the repository in the [Herdr marketplace](https://herdr.dev/plugins/). It is a topic, not a git tag. Install does not require a tag named `herdr-plugin`.
 
@@ -124,6 +124,8 @@ The script looks up this tab in its state file, then asks Herdr whether that pan
 | Missing, closed, or living in another tab | Open a new right-hand split in this workspace, focus it, and remember its pane id. |
 | Alive in this tab, and some other pane is focused | Focus the sidebar. |
 | Alive in this tab, and the sidebar is focused | Close the sidebar and forget the pane id. |
+
+A successful Herdr response has an empty error string. The toggle treats that as success and stores the pane id. If that record is missing, a pane in this tab whose label is `ai9s` is the sidebar: the key focuses it, and the next press closes it.
 
 The open command is:
 
