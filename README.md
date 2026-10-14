@@ -6,6 +6,8 @@
 
 [ai9s](https://ai9scli.io) in a [Herdr](https://herdr.dev) sidebar. One prefix key opens the session finder on the right of the current tab. Enter on a session or a harness starts that program in a **new tab of the same workspace** and focuses the new tab. The sidebar stays in the tab you were already in.
 
+The finder is the [ai9s](https://github.com/AymanZahran/ai9s) program. Install it from [ai9scli.io](https://ai9scli.io) before this plugin. The program's README and website link back here.
+
 This is the same shape as [herdr-nvim](https://github.com/ChmaraX/herdr-nvim) and [herdr-gitview](https://github.com/ChmaraX/herdr-gitview): a `herdr-plugin.toml` manifest, one sidebar pane, and one action you bind yourself. Herdr does not bind plugin keys.
 
 [Install](#install) · [Key](#key-binding) · [Sidebar](#the-sidebar) · [Enter](#opening-a-row) · [Labels](#tab-labels) · [Environment](#environment) · [Troubleshooting](#troubleshooting)
@@ -22,7 +24,7 @@ This is the same shape as [herdr-nvim](https://github.com/ChmaraX/herdr-nvim) an
 | Tool | Version |
 | --- | --- |
 | [Herdr](https://herdr.dev/docs/install/) | 0.8.0 or newer (`min_herdr_version` in the manifest). Developed against 0.9.3. |
-| [ai9s](https://github.com/AymanZahran/ai9s) | 1.0.8 or newer. That release adds `AI9S_HERDR_OPEN` and `ai9s resume --json`. |
+| [ai9s](https://github.com/AymanZahran/ai9s) ([site](https://ai9scli.io)) | 1.0.8 or newer. That release adds `AI9S_HERDR_OPEN` and `ai9s resume --json`. |
 | Python | 3.10 or newer. The standard library is enough. |
 | Platform | macOS or Linux. |
 
