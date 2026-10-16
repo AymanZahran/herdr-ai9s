@@ -152,7 +152,7 @@ The pane entrypoint is `sidebar`. Its command is a shell one-liner because Herdr
 command = ["sh", "-c", "exec \"$HERDR_PLUGIN_ROOT/scripts/sidebar.sh\""]
 ```
 
-`scripts/sidebar.sh` exports `AI9S_HERDR_OPEN` to `scripts/open_tab.py`, prefers `$HOME/.local/bin/ai9s`, and replaces itself with `ai9s`. The finder is a real terminal. Its own keys (`/`, `1` through `6`, `y`, `?`, and the rest) are ai9s keys. This plugin adds the Enter hook and the toggle.
+`scripts/sidebar.sh` exports `AI9S_HERDR_OPEN` to `scripts/open_tab.py`, prefers `$HOME/.local/bin/ai9s`, and replaces itself with `ai9s`. The finder is a real terminal. Its own keys (`/`, `1` through `6`, `n`, `F`, `y`, `?`, and the rest) are ai9s keys. `F` forks the selected session into a second row. The dialog asks for the new name and whether that fork gets its own git worktree, the same dialog ai9s uses on its own. That key lives in ai9s, so quit the sidebar and open it again after upgrading ai9s. This plugin adds the Enter hook and the toggle.
 
 Closing the split from Herdr's pane close, rather than from the toggle, leaves a stale pane id in the state file. The next toggle sees that the pane is gone and opens a fresh sidebar.
 
